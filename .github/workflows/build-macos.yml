@@ -1,0 +1,33 @@
+name: build-macos-app
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Build .app
+        run: |
+          python 一键打包build.py
+      - name: Archive .app
+        run: |
+          cd dist
+          ditto -c -k --sequesterRsrc --keepParent CustomerManager.app CustomerManager.app.zip
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CustomerManager-macOS
+          path: dist/CustomerManager.app.zip
+          if-no-files-found: error

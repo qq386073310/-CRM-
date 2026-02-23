@@ -1,0 +1,6 @@
+PyQt5==5.15.7
+pycryptodome==3.23.0
+openpyxl==3.0.10
+docxtpl==0.20.2
+PyInstaller
+PyMuPDF==1.23.8
