@@ -16,13 +16,29 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Show environment
+        run: |
+          python -V
+          which python
+          pip -V
+          pip list
+          locale || true
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       - name: Build .app
+        env:
+          LC_ALL: en_US.UTF-8
+          LANG: en_US.UTF-8
         run: |
-          python 一键打包build.py
+          python - <<'PY'
+          import importlib.util
+          spec = importlib.util.spec_from_file_location('build_script', '一键打包build.py')
+          m = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(m)
+          m.build()
+          PY
       - name: Archive .app
         run: |
           cd dist
